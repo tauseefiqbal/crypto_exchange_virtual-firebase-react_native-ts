@@ -1,361 +1,403 @@
-# VCrypto - Virtual Cryptocurrency Trading Platform
+# VCrypto — Virtual Cryptocurrency Exchange & Portfolio Simulator
 
-A modern, full-featured virtual cryptocurrency trading and portfolio management application built with **React Native (Expo SDK 51)** and powered by **Google Firebase** (Authentication & Cloud Firestore) with live real-time price feeds from the **CoinGecko API**.
+**VCrypto** is a cross-platform mobile and web virtual cryptocurrency exchange application built with **React Native (Expo)**, **TypeScript**, and **Firebase**. Every new trader starts with a **$100,000 USD** virtual balance to buy and sell real-time market cryptocurrencies (synced live from the CoinGecko API), track portfolio performance with interactive price charts, and compete on a real-time global leaderboard.
 
 ---
 
 ## Table of Contents
-- [VCrypto - Virtual Cryptocurrency Trading Platform](#vcrypto---virtual-cryptocurrency-trading-platform)
-  - [Table of Contents](#table-of-contents)
-  - [1. Features](#1-features)
-    - [1.1 Trading \& Simulation Features](#11-trading--simulation-features)
-    - [1.2 Market \& Analytics Features](#12-market--analytics-features)
-    - [1.3 User \& Authentication Features](#13-user--authentication-features)
-    - [1.4 Platform \& Technical Features](#14-platform--technical-features)
-  - [2. Tech Stack](#2-tech-stack)
-    - [2.1 Frontend \& Mobile](#21-frontend--mobile)
-    - [2.2 Backend \& Cloud Infrastructure](#22-backend--cloud-infrastructure)
-    - [2.3 Third-Party APIs \& Libraries](#23-third-party-apis--libraries)
-  - [3. Deployment](#3-deployment)
-    - [3.1 Live Application URL](#31-live-application-url)
-    - [3.2 Deployment Instructions](#32-deployment-instructions)
-  - [4. Test and Admin Users Credentials](#4-test-and-admin-users-credentials)
-    - [4.1 Guest \& Demo Access](#41-guest--demo-access)
-    - [4.2 Pre-Configured Test Accounts](#42-pre-configured-test-accounts)
-  - [5. How to Use App for Regular User](#5-how-to-use-app-for-regular-user)
-    - [5.1 Getting Started \& Registration](#51-getting-started--registration)
-    - [5.2 Browsing Live Crypto Markets](#52-browsing-live-crypto-markets)
-    - [5.3 Viewing Coin Details \& Price Charts](#53-viewing-coin-details--price-charts)
-    - [5.4 Executing Buy and Sell Orders](#54-executing-buy-and-sell-orders)
-    - [5.5 Tracking Portfolio \& Balance](#55-tracking-portfolio--balance)
-    - [5.6 Viewing Global Leaderboard Rankings](#56-viewing-global-leaderboard-rankings)
-  - [6. How to Use App for Admin User](#6-how-to-use-app-for-admin-user)
-    - [6.1 Accessing the Firebase Management Console](#61-accessing-the-firebase-management-console)
-    - [6.2 Managing User Accounts \& Balances](#62-managing-user-accounts--balances)
-    - [6.3 Managing Market Coins \& Real-Time Sync](#63-managing-market-coins--real-time-sync)
-    - [6.4 Enforcing Database Security Rules](#64-enforcing-database-security-rules)
-  - [7. Project Structure](#7-project-structure)
-  - [8. Installation \& Local Setup](#8-installation--local-setup)
-    - [8.1 Prerequisites](#81-prerequisites)
-    - [8.2 Setup Steps](#82-setup-steps)
-  - [9. Environment Variables Configuration](#9-environment-variables-configuration)
-  - [10. Available Scripts](#10-available-scripts)
-  - [11. License](#11-license)
+
+- [1. Features](#1-features)
+  - [1.1 Core Trading & Portfolio Features](#11-core-trading--portfolio-features)
+  - [1.2 Live Market & Analytics Features](#12-live-market--analytics-features)
+  - [1.3 Authentication, Leaderboard & Security Features](#13-authentication-leaderboard--security-features)
+- [2. Tech Stack](#2-tech-stack)
+  - [2.1 Frontend & Mobile Framework](#21-frontend--mobile-framework)
+  - [2.2 Backend, Database & Cloud Services](#22-backend-database--cloud-services)
+  - [2.3 DevOps, Build & Tooling](#23-devops-build--tooling)
+- [3. Deployment](#3-deployment)
+  - [3.1 Live Application URLs (APP URL)](#31-live-application-urls-app-url)
+  - [3.2 Android APK Build via Expo EAS](#32-android-apk-build-via-expo-eas)
+  - [3.3 Web Build & Firebase Hosting Deployment](#33-web-build--firebase-hosting-deployment)
+- [4. Test and Admin Users Credentials](#4-test-and-admin-users-credentials)
+  - [4.1 Regular Test User Credentials](#41-regular-test-user-credentials)
+  - [4.2 Instant Guest / Demo Access](#42-instant-guest--demo-access)
+  - [4.3 Seeded Leaderboard Demo Accounts](#43-seeded-leaderboard-demo-accounts)
+  - [4.4 Admin & Firebase Console Credentials](#44-admin--firebase-console-credentials)
+- [5. How to Use App for Regular User](#5-how-to-use-app-for-regular-user)
+  - [5.1 Signing Up or Logging In](#51-signing-up-or-logging-in)
+  - [5.2 Viewing Your Portfolio & $100,000 Starter Balance](#52-viewing-your-portfolio--100000-starter-balance)
+  - [5.3 Exploring Live Crypto Markets & Charts](#53-exploring-live-crypto-markets--charts)
+  - [5.4 Buying and Selling Cryptocurrencies](#54-buying-and-selling-cryptocurrencies)
+  - [5.5 Competing on the Global Rankings Leaderboard](#55-competing-on-the-global-rankings-leaderboard)
+  - [5.6 Managing Your User Profile](#56-managing-your-user-profile)
+- [6. How to Use App for Admin User](#6-how-to-use-app-for-admin-user)
+  - [6.1 Initializing & Seeding the Firestore Database](#61-initializing--seeding-the-firestore-database)
+  - [6.2 Syncing Live CoinGecko Market Prices](#62-syncing-live-coingecko-market-prices)
+  - [6.3 Auditing Firestore Coin Prices](#63-auditing-firestore-coin-prices)
+  - [6.4 Managing Cloud Functions & Scheduled Jobs](#64-managing-cloud-functions--scheduled-jobs)
+  - [6.5 Managing Users & Security Rules in Firebase Console](#65-managing-users--security-rules-in-firebase-console)
+- [7. Project Architecture & Directory Structure](#7-project-architecture--directory-structure)
+  - [7.1 Application Folder Layout](#71-application-folder-layout)
+  - [7.2 Cloud Firestore Data Model](#72-cloud-firestore-data-model)
+- [8. Local Development Setup & Installation](#8-local-development-setup--installation)
+  - [8.1 Prerequisites](#81-prerequisites)
+  - [8.2 Environment Variables Configuration](#82-environment-variables-configuration)
+  - [8.3 Running the Application Locally](#83-running-the-application-locally)
+- [9. Troubleshooting & FAQ](#9-troubleshooting--faq)
+  - [9.1 Common Build & Runtime Issues](#91-common-build--runtime-issues)
+- [10. License](#10-license)
 
 ---
 
 ## 1. Features
 
-### 1.1 Trading & Simulation Features
-* ✅ **Virtual $100,000 Starter Balance:** Every new user receives $100,000 in virtual USD to simulate investing in crypto risk-free.
-* ✅ **Instant Buy & Sell Execution:** Seamlessly buy or sell fractional and whole quantities of top cryptocurrencies with instant execution.
-* ✅ **One-Tap "Buy Max" & "Sell All":** Quick convenience buttons to invest all available cash or liquidate an entire crypto position instantly.
-* ✅ **Atomic Transaction Engine:** ACID-compliant Firestore transactions prevent balance mismatches, double-spending, and race conditions during trading.
-* ✅ **Dynamic Position Tracking:** Displays current cryptocurrency holdings, percentage of portfolio, and real-time USD asset valuation.
+### 1.1 Core Trading & Portfolio Features
+- ✅ **$100,000 USD Virtual Starter Balance:** Every newly registered user or guest account is automatically provisioned with `$100,000.00` in virtual USD to begin trading risk-free.
+- ✅ **Real-Time Portfolio Valuation:** Live Firestore listeners (`onSnapshot`) dynamically compute total portfolio net worth and individual asset holdings as market prices fluctuate.
+- ✅ **Atomic Buy & Sell Order Execution:** Supports both server-side Cloud Functions (`exchangeCoins`) and client-side atomic Firestore transactions (`runTransaction`) with strict USD/coin balance validation.
+- ✅ **Instant USD ↔ Crypto Conversion Calculator:** Bidirectional input fields on the exchange screen automatically calculate equivalent token quantities or USD values in real time.
+- ✅ **One-Tap "Buy Max" & "Sell All" Shortcuts:** Quickly allocate 100% of available USD balance on buy orders or liquidate an entire token position on sell orders.
 
-### 1.2 Market & Analytics Features
-* ✅ **Live CoinGecko Price Ingestion:** Automatically fetches real-time prices for top 50+ cryptocurrencies (BTC, ETH, SOL, BNB, XRP, ADA, DOGE, etc.).
-* ✅ **Interactive 7-Day Sparkline Graphs:** Visualizes price trends with responsive line graphs rendered using `react-native-chart-kit`.
-* ✅ **Price Change Indicators:** Color-coded percentage indicators for 1-hour, 24-hour, and 7-day price movements (green for gains, red for dips).
-* ✅ **Pull-to-Refresh Price Sync:** Drag down on the Market screen to instantly fetch up-to-the-minute market rates.
-* ✅ **Smart Decimal Formatting:** Accurately formats multi-digit numbers (BTC at $80,000+) down to micro-currencies ($0.000005) without truncation.
+### 1.2 Live Market & Analytics Features
+- ✅ **Live CoinGecko Market Sync:** Fetches top 50+ cryptocurrencies by market cap directly from the CoinGecko REST API v3, including current prices and 7-day sparkline histories.
+- ✅ **Multi-Timeframe Percentage Change Indicators:** Displays color-coded (`green` / `red`) price movement percentages across **1-Hour**, **24-Hour (1 Day)**, and **7-Day** windows.
+- ✅ **Interactive 7-Day Price History Graphs:** Renders smooth bezier line charts on the Coin Details screen using `react-native-chart-kit` and `react-native-svg`.
+- ✅ **Pull-to-Refresh Market Feeds:** Swipe down on the Market or Rankings screens to trigger an immediate live price sync and leaderboard recalculation.
 
-### 1.3 User & Authentication Features
-* ✅ **One-Tap Guest / Demo Login:** Instant entry for demonstration and testing without requiring password setup.
-* ✅ **Email & Password Authentication:** Full registration and sign-in flow with persistent sessions powered by Firebase Auth.
-* ✅ **Global Competitive Leaderboard:** Real-time rankings page sorting all traders by calculated total net worth.
-* ✅ **Personal Profile Overview:** Displays investor name, email, avatar, and cumulative portfolio net worth.
-
-### 1.4 Platform & Technical Features
-* ✅ **Modern Expo SDK 51:** Fully compatible with React Native 0.74, React 18, and modern Android/iOS Expo Go client apps.
-* ✅ **Firebase Modular SDK v10:** Clean, modular imports reducing bundle footprint and enabling responsive offline caching.
-* ✅ **Real-Time Data Streaming:** Cloud Firestore listeners (`onSnapshot`) push live price and portfolio updates to screens with zero polling.
+### 1.3 Authentication, Leaderboard & Security Features
+- ✅ **Multi-Method Firebase Authentication:** Supports **Email & Password Registration/Login**, **One-Tap Guest / Demo Sign-In** (Anonymous Auth), and OAuth entry points.
+- ✅ **Persistent Cross-Session Auth State:** Uses `@react-native-async-storage/async-storage` to keep users signed in across app restarts on Android, iOS, and Web.
+- ✅ **Global Real-Time Trader Leaderboard:** Ranks up to the top 100 traders ordered by net worth (`orderBy('networth', 'desc')`) with instant updates.
+- ✅ **Granular Firestore Security Rules:** Protects market coin documents from unauthorized client tampering, prevents direct client manipulation of the `networth` leaderboard field, and isolates portfolio subcollections (`users/{userId}/portfolioCoins/{coinId}`) to their respective owners.
 
 ---
 
 ## 2. Tech Stack
 
-### 2.1 Frontend & Mobile
-* **Framework:** [React Native](https://reactnative.dev/) (v0.74.5) with [Expo](https://expo.dev/) (SDK 51)
-* **Language:** [TypeScript](https://www.typescriptlang.org/) (v5.3) & JavaScript (ES2021+)
-* **Navigation:** [React Navigation 6](https://reactnavigation.org/) (Bottom Tabs, Native Stack, Deep Linking)
-* **Data Visualization:** [react-native-chart-kit](https://github.com/indiespirit/react-native-chart-kit) & [react-native-svg](https://github.com/software-mansion/react-native-svg)
-* **Icons & Fonts:** [@expo/vector-icons](https://icons.expo.fyi/) (Ionicons, AntDesign, FontAwesome5, Entypo, MaterialIcons)
-* **Local Storage:** [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage)
+### 2.1 Frontend & Mobile Framework
+| Technology | Version | Purpose |
+| :--- | :--- | :--- |
+| **React Native** | `0.74.5` | Cross-platform native mobile UI for Android & iOS |
+| **Expo SDK** | `~51.0.38` | Managed app workflow, native APIs, fonts, assets & web support |
+| **TypeScript** | `~5.3.3` | Static type checking across screens, services, and Cloud Functions |
+| **React Navigation v6** | `^6.1.18` | Native stack (`@react-navigation/stack`) and bottom tabs (`@react-navigation/bottom-tabs`) |
+| **React Native Chart Kit** | `^6.12.0` | Bezier line charts for 7-day cryptocurrency price sparklines |
+| **React Native SVG** | `15.2.0` | Vector graphics rendering engine for charts and icons |
+| **React Native Web** | `~0.19.10` | Browser compatibility layer for running VCrypto on the web |
 
-### 2.2 Backend & Cloud Infrastructure
-* **Database:** [Google Cloud Firestore](https://firebase.google.com/docs/firestore) (NoSQL real-time document database)
-* **Authentication:** [Firebase Authentication](https://firebase.google.com/docs/auth) (Email/Password, Anonymous, OAuth ready)
-* **Cloud Functions:** [Firebase Cloud Functions v2](https://firebase.google.com/docs/functions) (Scheduled background sync & order execution)
-* **Rules & Security:** Declarative Firestore Security Rules enforcing user data ownership and transaction integrity
+### 2.2 Backend, Database & Cloud Services
+| Technology | Version | Purpose |
+| :--- | :--- | :--- |
+| **Firebase Authentication** | `^10.14.1` | Email/Password and Anonymous Guest authentication |
+| **Cloud Firestore** | `^10.14.1` | NoSQL real-time document database for `coins`, `users`, and `portfolioCoins` |
+| **Firebase Cloud Functions (v2)** | `Node / TS` | Serverless triggers (`handleUserSignup`), callable trades (`exchangeCoins`), and scheduled jobs (`syncCoinGeckoPrices`) |
+| **CoinGecko Public API v3** | `REST API` | Real-time cryptocurrency market prices, icons, percentage changes, and 7-day sparklines |
 
-### 2.3 Third-Party APIs & Libraries
-* **Market Data Provider:** [CoinGecko Public API](https://www.coingecko.com/en/api) (Top 100 markets, sparkline prices, percentage changes)
-* **Image Assets:** Custom 3D illustration assets (Saly 3D illustrations)
+### 2.3 DevOps, Build & Tooling
+| Tool | Purpose |
+| :--- | :--- |
+| **Expo Application Services (EAS)** | Cloud Android `.apk` / `.aab` and iOS builds (`eas.json`) |
+| **Firebase CLI & Emulator Suite** | Local Auth (`:9099`), Firestore (`:8080`), Functions (`:5001`), and Emulator UI (`:4000`) |
+| **Node.js Admin Scripts** | Standalone database initialization, live price syncing, and Firestore auditing (`scripts/`) |
 
 ---
 
 ## 3. Deployment
 
-### 3.1 Live Application URL
-* **App Live URL:** (https://expo.dev/accounts/tauseefiqbal/projects/VCrypto/builds/1bcbff82-2ba7-4f78-9e65-5cd272095290)
+### 3.1 Live Application URLs (APP URL)
+| Environment / Platform | Live URL / Build Link | Status |
+| :--- | :--- | :--- |
+| **Web App (APP URL)** | [https://react-native-crypto-exchange.web.app](https://react-native-crypto-exchange.web.app) *(or replace with your custom hosted URL)* | 🟢 Ready / Configurable |
+| **Firebase Alternate URL** | [https://react-native-crypto-exchange.firebaseapp.com](https://react-native-crypto-exchange.firebaseapp.com) | 🟢 Ready / Configurable |
+| **Expo EAS Android Build** | [https://expo.dev/accounts/tauseefiqbal/projects/VCrypto/builds/1bcbff82-2ba7-4f78-9e65-5cd272095290](https://expo.dev/accounts/tauseefiqbal/projects/VCrypto/builds/1bcbff82-2ba7-4f78-9e65-5cd272095290) | 🟢 APK Preview Build |
+| **Expo Project Dashboard** | [https://expo.dev/accounts/tauseefiqbal/projects/VCrypto](https://expo.dev/accounts/tauseefiqbal/projects/VCrypto) | 🟢 Active |
 
-### 3.2 Deployment Instructions
-* **Expo EAS Build (Android APK / AAB):**
-  ```bash
-  eas build --platform android --profile preview
-  ```
-* **Expo EAS Build (iOS IPA):**
-  ```bash
-  eas build --platform ios --profile preview
-  ```
-* **Firebase Cloud Functions & Rules Deployment:**
-  ```bash
-  firebase deploy --only firestore:rules,functions
-  ```
+### 3.2 Android APK Build via Expo EAS
+The project is pre-configured with `eas.json` to generate an installable Android `.apk` under the `preview` profile:
+```bash
+# Install EAS CLI globally if not installed
+npm install -g eas-cli
+
+# Log in to your Expo account
+eas login
+
+# Trigger an installable Android APK build in the cloud
+eas build -p android --profile preview
+
+# Check build status or download link anytime
+eas build:list
+```
+
+### 3.3 Web Build & Firebase Hosting Deployment
+To export the static web bundle into the `dist/` directory and deploy it live:
+```bash
+# Export production web bundle via Expo
+npx expo export -p web
+
+# Deploy Firestore rules, indexes, andFunctions/Hosting to Firebase
+firebase deploy --only firestore:rules,firestore:indexes
+```
 
 ---
 
 ## 4. Test and Admin Users Credentials
 
-### 4.1 Guest & Demo Access
-* **Access Method:** Tap **"Continue as Guest / Demo"** on the Welcome screen.
-* **Credentials:** None required. Automatically generates an authenticated demo session with **$100,000 USD** virtual funds.
+### 4.1 Regular Test User Credentials
+You can sign in using the pre-configured test trader account or register a brand-new account directly from the **Welcome Screen** (`Sign In or Register with Email`):
 
-### 4.2 Pre-Configured Test Accounts
-Use the **"Sign In or Register with Email"** button on the Welcome screen:
-
-| Role | Email Address | Password | Initial Net Worth |
+| Role | Email | Password | Starting Balance |
 | :--- | :--- | :--- | :--- |
-| **Trader 1 (Pro)** | `satoshi@bitcoin.org` | `Crypto123!` | \$1,452,000.00 |
-| **Trader 2 (Pro)** | `vitalik@ethereum.org` | `Crypto123!` | \$980,500.00 |
-| **Trader 3 (Standard)** | `alex@vcrupto.com` | `Crypto123!` | \$215,400.00 |
-| **Trader 4 (Starter)** | `trader@vcrupto.com` | `Crypto123!` | \$100,000.00 |
+| **Regular Test User 1** | `trader@vcrypto.com` | `Test@1234` | `$100,000.00 USD` |
+| **Regular Test User 2** | `demo@vcrypto.com` | `Demo@1234` | `$100,000.00 USD` |
+
+*(Note: If these accounts have not yet been created in your Firebase Auth instance, open the app, tap **Sign In or Register with Email** → **Don't have an account? Register**, and sign up with the credentials above to immediately receive `$100,000`.)*
+
+### 4.2 Instant Guest / Demo Access
+- **Button:** Tap **`Continue as Guest / Demo`** (or the Google/Apple quick-demo buttons on the Welcome screen).
+- **Credentials Required:** None (uses Firebase Anonymous Authentication).
+- **Provisioning:** Automatically seeds sample coins if missing and creates a `Crypto Trader` profile with `$100,000.00 USD`.
+
+### 4.3 Seeded Leaderboard Demo Accounts
+Running `node scripts/initFirestore.js` seeds the following benchmark traders into the global `users` collection for leaderboard competition:
+
+| Trader Name | Email | Seeded Net Worth | Document ID |
+| :--- | :--- | :--- | :--- |
+| **Satoshi Nakamoto** | `satoshi@bitcoin.org` | `$1,452,000.00` | `demo_user_satoshi` |
+| **Vitalik Buterin** | `vitalik@ethereum.org` | `$980,500.00` | `demo_user_vitalik` |
+| **Alex Crypto** | `alex@vcrupto.com` | `$215,400.00` | `demo_user_alex` |
+| **Sarah Jenkins** | `sarah.j@invest.io` | `$112,000.00` | `demo_user_sarah` |
+
+### 4.4 Admin & Firebase Console Credentials
+ Administrative operations in VCrypto (market price synchronization, database seeding, security rule updates, and user management) are performed via the **Firebase Console** and **Admin CLI Scripts** rather than an in-app UI login:
+
+| Admin Portal / Resource | Access URL / Identifier | Authentication Method |
+| :--- | :--- | :--- |
+| **Firebase Project ID** | `react-native-crypto-exchange` | Google Cloud / Firebase Owner Account |
+| **Firebase Console** | [https://console.firebase.google.com/project/react-native-crypto-exchange](https://console.firebase.google.com/project/react-native-crypto-exchange) | Project Owner Email & Password |
+| **Expo EAS Dashboard** | `tauseefiqbal` ([Expo Dashboard](https://expo.dev/accounts/tauseefiqbal/projects/VCrypto)) | Expo CLI / Account Credentials |
 
 ---
 
 ## 5. How to Use App for Regular User
 
-### 5.1 Getting Started & Registration
-1. Open the application on your mobile device (via Expo Go or installed build).
-2. On the **Welcome Screen**:
-   * Tap **"Continue as Guest / Demo"** for instant 1-tap onboarding, OR
-   * Tap **"Sign In or Register with Email"** to create a custom persistent account.
-3. Your account is automatically credited with a virtual balance of **$100,000.00 USD**.
+### 5.1 Signing Up or Logging In
+1. Launch **VCrypto** on your Android device, iOS simulator, or Web browser.
+2. On the **Welcome Screen**, choose one of the following:
+   - Tap **`Continue as Guest / Demo`** for instant 1-click access.
+   - Tap **`Sign In or Register with Email`** to open the authentication modal:
+     - **New Users:** Tap *"Don't have an account? Register"*, enter your **Display Name**, **Email**, and **Password**, and tap **`Sign Up & Get $100,000`**.
+     - **Returning Users:** Enter your **Email** and **Password**, then tap **`Sign In`**.
 
-### 5.2 Browsing Live Crypto Markets
-1. Tap the **Market** icon in the bottom navigation tab bar.
-2. Browse the list of top cryptocurrencies sorted by market capitalization.
-3. View real-time coin names, symbols, live USD prices, and 24-hour gains/losses.
-4. Drag down from the top of the list (**Pull to Refresh**) at any time to query CoinGecko for up-to-the-second price updates.
+### 5.2 Viewing Your Portfolio & $100,000 Starter Balance
+1. Navigate to the **Portfolio** tab from the bottom navigation bar.
+2. View your total **Portfolio balance** at the top (initialized at `$100,000.00`).
+3. Below the header, inspect all cryptocurrencies you currently hold, including token quantity and current USD value.
+4. Tap any held coin in your portfolio to jump directly to its **Coin Details** screen.
 
-### 5.3 Viewing Coin Details & Price Charts
-1. From the Market screen, tap on any cryptocurrency (e.g., Bitcoin, Ethereum, Solana).
-2. The **Price Data** screen will display:
-   * Current live trading price.
-   * Percentage changes across 1 hour, 1 day, and 7 days.
-   * Interactive 7-day sparkline performance chart.
-   * Your current position in this asset (number of coins held and total USD value).
+### 5.3 Exploring Live Crypto Markets & Charts
+1. Tap the **Market** tab in the bottom navigation bar.
+2. Browse the live list of cryptocurrencies displaying:
+   - Coin logo, name, and ticker symbol (`BTC`, `ETH`, `SOL`, etc.).
+   - Current market price in USD.
+   - 24-hour percentage change badge (`+` green or `-` red).
+3. **Pull down** on the list at any time to sync fresh prices directly from CoinGecko.
+4. Tap any cryptocurrency to open the **Coin Details Screen**, where you can inspect:
+   - **1 Hour**, **1 Day**, and **7 Days** percentage changes.
+   - The interactive **7-Day Price History Graph**.
+   - Your current position in that coin (`Amount` and `$ USD Value`).
 
-### 5.4 Executing Buy and Sell Orders
-1. On the **Price Data** screen, tap the green **"Buy"** button or red **"Sell"** button.
-2. Enter the amount of crypto you want to purchase or sell. The equivalent USD value calculates automatically.
-3. Alternatively, tap **"Buy Max"** to use all your available USD cash, or **"Sell All"** to liquidate your holding.
-4. Tap **"Place Order"**.
-5. Once confirmed, your cash and crypto balances update instantly.
+### 5.4 Buying and Selling Cryptocurrencies
+1. From the **Coin Details Screen**, tap the green **`Buy`** button or red **`Sell`** button to open the **Coin Exchange Screen**.
+2. Enter the amount you wish to trade:
+   - Type in the **Coin amount** box (left) to automatically see the USD cost (right), **OR**
+   - Type in the **USD** box (right) to automatically calculate the exact fractional coin amount (up to 6 decimal places).
+3. Use quick shortcuts if desired:
+   - Tap **`Buy max ($...)`** when buying to spend your entire available USD balance.
+   - Tap **`Sell all (... COIN)`** when selling to liquidate your full holding.
+4. Tap **`Place Order`** at the bottom.
+5. Once confirmed, an **`Order Completed`** alert appears and redirects you back to your updated **Portfolio**.
 
-### 5.5 Tracking Portfolio & Balance
-1. Tap the **Portfolio** tab in the bottom navigation bar.
-2. View your **Total Portfolio Balance** (USD cash + total valuation of all held cryptocurrencies).
-3. Review your individual asset allocations, amount of coins held, and current value.
-
-### 5.6 Viewing Global Leaderboard Rankings
+### 5.5 Competing on the Global Rankings Leaderboard
 1. Tap the **Rankings** tab in the bottom navigation bar.
-2. View all traders ranked by their total net worth.
-3. Compete to increase your net worth through profitable trades and climb to #1 on the leaderboard.
+2. View the live leaderboard of top traders sorted by total **Net Worth** in descending order.
+3. Pull down on the list to refresh rankings at any time.
+
+### 5.6 Managing Your User Profile
+1. Tap the **Profile** tab in the bottom navigation bar.
+2. View your display name, registered email address, avatar, and current net worth.
+3. Tap **`Sign out`** at the bottom of the screen to securely log out and return to the Welcome Screen.
 
 ---
 
 ## 6. How to Use App for Admin User
 
-### 6.1 Accessing the Firebase Management Console
-1. Navigate to the [Firebase Console](https://console.firebase.google.com/).
-2. Select the project: **`react-native-crypto-exchange`**.
-3. Use the left-hand navigation to access **Authentication**, **Firestore Database**, and **Functions**.
+### 6.1 Initializing & Seeding the Firestore Database
+To initialize a fresh Firestore database with base cryptocurrencies (`USD`, `BTC`, `ETH`, `SOL`, `BNB`, `ADA`, `DOGE`, `XRP`) and demo leaderboard traders:
+```bash
+node scripts/initFirestore.js
+```
+**What this script does:**
+1. Authenticates with the Firebase project (`react-native-crypto-exchange`).
+2. Populates the `coins` collection with baseline market data and 7-day price arrays.
+3. Populates the `users` collection and `portfolioCoins` subcollections with demo leaderboard accounts (`Satoshi Nakamoto`, `Vitalik Buterin`, `Alex Crypto`, `Sarah Jenkins`).
 
-### 6.2 Managing User Accounts & Balances
-1. **View / Delete Users:**
-   * Go to **Build $\rightarrow$ Authentication $\rightarrow$ Users** to view registered emails, UIDs, and sign-in providers.
-2. **Adjust User Balances & Net Worth:**
-   * Go to **Build $\rightarrow$ Firestore Database $\rightarrow$ Data**.
-   * Open the **`users`** collection and select any user's document UID.
-   * Edit the `networth` field directly to adjust leaderboard positioning.
-   * Expand the user's **`portfolioCoins`** subcollection and select the `usd` document to increase or decrease cash reserves.
+### 6.2 Syncing Live CoinGecko Market Prices
+To manually push real-time prices and 7-day sparklines for the top 50 cryptocurrencies from CoinGecko into Cloud Firestore:
+```bash
+node scripts/syncRealPrices.js
+```
+**What this script does:**
+1. Queries `https://api.coingecko.com/api/v3/coins/markets` for the top 50 coins in USD.
+2. Executes an atomic Firestore batch write (`writeBatch`) updating `currentPrice`, `valueChange24H`, `valueChange1D`, `valueChange7D`, and `priceHistory` for every coin.
 
-### 6.3 Managing Market Coins & Real-Time Sync
-1. **Manual Coin Ingestion:**
-   * Run the sync script from your terminal to refresh all 50+ coins with up-to-the-minute exchange data:
+### 6.3 Auditing Firestore Coin Prices
+To verify that all coins in Cloud Firestore have valid numeric prices and inspect the current state of the `coins` collection from the terminal:
+```bash
+node scripts/checkPrices.js
+```
+
+### 6.4 Managing Cloud Functions & Scheduled Jobs
+The `functions/src/index.ts` module provides four backend functions for production Firebase Blaze environments:
+- `handleUserSignup`: Auth `onCreate` trigger that automatically initializes `users/{uid}` and grants `$100,000 USD`.
+- `exchangeCoins`: HTTPS Callable function (`onCall`) that validates and executes atomic buy/sell trades.
+- `syncCoinGeckoPrices`: Scheduled cron function (`every 5 minutes`) that syncs CoinGecko prices and recalculates all users' net worths.
+- `triggerPriceSync`: On-demand HTTPS Callable wrapper to manually trigger a market sync and leaderboard recalculation.
+
+To build and deploy Cloud Functions:
+```bash
+cd functions
+npm install
+npm run build
+firebase deploy --only functions
+```
+
+### 6.5 Managing Users & Security Rules in Firebase Console
+1. **Authentication Providers:**
+   - Open **Firebase Console → Authentication → Sign-in method**.
+   - Ensure **Email/Password** and **Anonymous** providers are **Enabled**.
+2. **Firestore Security Rules (`firestore.rules`):**
+   - Deploy updated security rules via CLI:
      ```bash
-     node scripts/syncRealPrices.js
+     firebase deploy --only firestore:rules
      ```
-2. **Adding Custom Coins or Overriding Prices:**
-   * In the Firestore Database, navigate to the **`coins`** collection.
-   * Click **Add document** or select an existing coin (e.g. `bitcoin`) to modify `currentPrice`, `name`, or `symbol`. All connected mobile clients will update instantaneously via live listeners.
-
-### 6.4 Enforcing Database Security Rules
-* Security rules are defined in [`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKON/VCrupto-main/firestore.rules).
-* To deploy updated security rules to production:
-  ```bash
-  firebase deploy --only firestore:rules
-  ```
+   - To allow client-side CoinGecko price syncing during development, ensure authenticated writes to `/coins/{coinId}` are permitted when Cloud Functions are not used.
 
 ---
 
-## 7. Project Structure
+## 7. Project Architecture & Directory Structure
 
+### 7.1 Application Folder Layout
+```text
+react-native-crypto_exchange_virtual/
+├── assets/                     # App icons, splash screen, fonts, and 3D Saly illustrations
+├── config/                     # Secondary Firebase configuration helpers (native & web)
+├── functions/                  # Firebase Cloud Functions (TypeScript backend)
+│   └── src/index.ts            # Signup trigger, atomic trade callable & 5-min CoinGecko cron
+├── scripts/                    # Admin CLI maintenance & database seeding scripts
+│   ├── initFirestore.js        # Seeds initial coins & demo leaderboard users
+│   ├── syncRealPrices.js       # Fetches & batch-writes live CoinGecko prices to Firestore
+│   └── checkPrices.js          # Audits Firestore coins collection from terminal
+├── src/
+│   ├── components/             # Reusable UI components
+│   │   ├── CoinPriceGraph/     # 7-day Bezier line chart component
+│   │   ├── MarketCoin/         # Market list item row
+│   │   ├── PercentageChange/   # Color-coded +/- percentage text component
+│   │   ├── PortfolioCoin/      # User holding row item
+│   │   └── UserRankingItem/    # Leaderboard row item
+│   ├── constants/              # App-wide colors and layout dimensions
+│   ├── firebase/               # Core Firebase client services
+│   │   ├── auth.ts             # Login, registration, guest auth & $100k profile initializer
+│   │   ├── config.ts           # Firebase SDK initialization & Emulator toggle
+│   │   ├── seed.ts             # Fallback sample coin seeder
+│   │   └── services.ts         # Firestore realtime listeners, CoinGecko sync & trade engine
+│   ├── hooks/                  # Custom hooks (cached resources, color scheme)
+│   ├── navigation/             # React Navigation Stack & Bottom Tab navigators
+│   ├── screens/                # Application screens
+│   │   ├── WelcomeScreen/      # Onboarding, Guest login & Email/Password Auth modal
+│   │   ├── HomeScreen/         # Landing overview tab
+│   │   ├── PortfolioScreen/    # Realtime net worth & active crypto holdings
+│   │   ├── MarketScreen/       # Live cryptocurrency prices & pull-to-refresh
+│   │   ├── CoinDetailsScreen/  # Historical price chart, stats & Buy/Sell actions
+│   │   ├── CoinExchangeScreen/ # Order execution screen with USD/Coin converter
+│   │   ├── RankingsScreen/     # Global top-100 trader leaderboard
+│   │   └── ProfileScreen/      # User profile summary & Sign Out
+│   └── utils/                  # AppContext and currency formatting utilities
+├── .env.example                # Environment variable template
+├── app.json                    # Expo configuration (app name, slug, icons, package IDs)
+├── eas.json                    # Expo Application Services (EAS) build profiles
+├── firebase.json               # Firebase Firestore, Functions & Emulator ports config
+├── firestore.rules             # Cloud Firestore security rules
+└── package.json                # Dependencies and npm scripts
 ```
-VCrupto-main/
-├── .env                              # Active environment configuration (API keys)
-├── .env.example                      # Template environment variables
-├── App.tsx                           # Main React Native entry & Auth state provider
-├── app.json                          # Expo project configuration (SDK 51)
-├── babel.config.js                   # Babel compiler settings
-├── firebase.json                     # Firebase deployment & emulator configuration
-├── firestore.indexes.json            # Firestore leaderboard composite indexes
-├── firestore.rules                   # Production Firestore security rules
-├── package.json                      # Project dependencies & npm scripts
-├── tsconfig.json                     # TypeScript configuration
-├── assets/                           # Fonts and 3D illustration images
-├── functions/                        # Firebase Cloud Functions (v2)
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/index.ts                  # Scheduled price sync & exchange logic
-├── scripts/                          # Administrative utility scripts
-│   ├── checkPrices.js                # Inspect current coins in Firestore
-│   ├── initFirestore.js              # Database initialization & seeding
-│   └── syncRealPrices.js             # Live CoinGecko price sync utility
-└── src/                              # Mobile Application Source Code
-    ├── components/                   # Reusable UI components
-    │   ├── CoinPriceGraph/           # Sparkline chart visualization
-    │   ├── MarketCoin/               # Market item list row
-    │   ├── PercentageChange/         # Price change chip
-    │   ├── PortfolioCoin/            # Portfolio holding list item
-    │   └── UserRankingItem/          # Leaderboard row item
-    ├── constants/                    # Color schemes and app constants
-    ├── firebase/                     # Firebase Client Integration
-    │   ├── auth.ts                   # Auth handlers (Email, Guest, Session)
-    │   ├── config.ts                 # Firebase app & SDK initialization
-    │   ├── seed.ts                   # Local fallback data seeder
-    │   └── services.ts               # Real-time subscriptions & trade functions
-    ├── hooks/                        # Custom React hooks (Cached resources, theme)
-    ├── navigation/                   # React Navigation 6 route stacks
-    │   ├── BottomTabNavigator.tsx    # 5-tab main application navigation
-    │   ├── LinkingConfiguration.ts   # Deep linking schema routes
-    │   └── index.tsx                 # Root navigation stack
-    ├── screens/                      # Application Screens
-    │   ├── CoinDetailsScreen/        # Detailed price data & charts
-    │   ├── CoinExchangeScreen/       # Buy/Sell transaction screen
-    │   ├── HomeScreen/               # App landing screen
-    │   ├── MarketScreen/             # Live cryptocurrency listings
-    │   ├── PortfolioScreen/          # Holdings & balance overview
-    │   ├── ProfileScreen/            # User profile & sign-out
-    │   ├── RankingsScreen/           # Competitive leaderboard
-    │   └── WelcomeScreen/            # Authentication & Guest entry
-    └── utils/                        # Formatting and context utilities
-```
+
+### 7.2 Cloud Firestore Data Model
+- **`coins/{coinId}`**
+  - Fields: `id`, `cgId`, `name`, `symbol`, `image`, `currentPrice` (number), `valueChange24H` (number), `valueChange1D` (number), `valueChange7D` (number), `priceHistory` (number[]), `priceHistoryString` (JSON string), `updatedAt`.
+- **`users/{userId}`**
+  - Fields: `id`, `name`, `email`, `image`, `networth` (number), `createdAt`, `updatedAt`.
+- **`users/{userId}/portfolioCoins/{coinId}`** *(Subcollection)*
+  - Fields: `id`, `coinId`, `userId`, `amount` (number), `updatedAt`.
 
 ---
 
-## 8. Installation & Local Setup
+## 8. Local Development Setup & Installation
 
 ### 8.1 Prerequisites
-* [Node.js](https://nodejs.org/) (v18, v20, or v22 recommended)
-* [npm](https://www.npmjs.com/) (v9+)
-* [Expo Go app](https://expo.dev/go) installed on your iOS or Android mobile device
+- **Node.js** `>= 18.x` and **npm**
+- **Expo Go** app installed on your physical iOS/Android device (or Android Studio / Xcode simulator)
+- A **Firebase Project** with **Authentication** (Email/Password + Anonymous) and **Cloud Firestore** enabled
 
-### 8.2 Setup Steps
-
-1. **Clone or navigate to the repository:**
-   ```bash
-   git clone https://github.com/tauseefiqbal/react-native-crypto_exchange_virtual.git
-   cd react-native-crypto_exchange_virtual
-   ```
-
-2. **Install project dependencies:**
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-
-3. **Verify Environment Variables:**
-   Ensure your `.env` file contains your Firebase credentials:
+### 8.2 Environment Variables Configuration
+1. Copy the template environment file at the root of the project:
    ```bash
    cp .env.example .env
    ```
-
-4. **Initialize Database Collections (First-time setup):**
-   ```bash
-   node scripts/syncRealPrices.js
+2. Open `.env` and populate your Firebase project credentials from **Firebase Console → Project Settings → General → Your apps**:
+   ```env
+   EXPO_PUBLIC_FIREBASE_API_KEY=your_api_key
+   EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project-id.firebaseapp.com
+   EXPO_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+   EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
+   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
+   EXPO_PUBLIC_USE_FIREBASE_EMULATOR=false
    ```
 
-5. **Start the Development Server:**
-   ```bash
-   npx expo start
-   ```
+### 8.3 Running the Application Locally
+```bash
+# 1. Install dependencies
+npm install
 
-6. **Open on Device:**
-   * Open the **Expo Go** app on Android and scan the terminal QR code.
-   * On iOS, open the **Camera** app and scan the QR code.
-   * *Note:* If running across different Wi-Fi bands or encountering firewall warnings, launch with tunnel mode:
-     ```bash
-     npx expo start --tunnel
-     ```
+# 2. (Optional) Seed Firestore with initial coins and demo leaderboard users
+node scripts/initFirestore.js
 
----
+# 3. Start the Expo development server
+npm start
 
-## 9. Environment Variables Configuration
-
-Create a `.env` file in the root directory:
-
-```ini
-# Firebase Client Configuration (EXPO_PUBLIC_ prefix exposes to Expo client)
-EXPO_PUBLIC_FIREBASE_API_KEY=
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=react-native-crypto-exchange.firebaseapp.com
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=react-native-crypto-exchange
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=react-native-crypto-exchange.firebasestorage.app
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-EXPO_PUBLIC_FIREBASE_APP_ID=
-
-# Node.js / Server fallback variables
-FIREBASE_API_KEY=
-FIREBASE_AUTH_DOMAIN=react-native-crypto-exchange.firebaseapp.com
-FIREBASE_PROJECT_ID=react-native-crypto-exchange
-FIREBASE_STORAGE_BUCKET=react-native-crypto-exchange.firebasestorage.app
-FIREBASE_MESSAGING_SENDER_ID=
-FIREBASE_APP_ID=
-
-# Toggle Local Emulators (true / false)
-EXPO_PUBLIC_USE_FIREBASE_EMULATOR=false
+# Run directly on Android, iOS, or Web:
+npm run android
+npm run ios
+npm run web
 ```
 
 ---
 
-## 10. Available Scripts
+## 9. Troubleshooting & FAQ
 
-| Command | Description |
-| :--- | :--- |
-| `npm start` or `npx expo start` | Launches the local Metro bundler for Expo Go |
-| `npx expo start --tunnel` | Starts Metro bundler through a public tunnel proxy |
-| `npx expo start --android` | Opens app directly in connected Android device/emulator |
-| `npx expo start --ios` | Opens app directly in iOS Simulator |
-| `npx expo start --web` | Runs app in local web browser |
-| `npx expo-doctor` | Runs 17 health and dependency compatibility checks |
-| `node scripts/syncRealPrices.js` | Fetches top 50 coins from CoinGecko & updates Firestore |
-| `node scripts/initFirestore.js` | Seeds sample leaderboard users and initial coins |
-| `node scripts/checkPrices.js` | Inspects currently stored coin prices in Firestore |
+### 9.1 Common Build & Runtime Issues
+- **`auth/admin-restricted-operation` when tapping "Continue as Guest / Demo":**
+  - **Cause:** Anonymous Authentication is disabled in your Firebase project.
+  - **Fix:** Go to **Firebase Console → Authentication → Sign-in method**, select **Anonymous**, toggle **Enable**, and click **Save** (or use **Sign In or Register with Email**).
+- **EAS Build stays in `Build queued...` for 20+ minutes:**
+  - **Cause:** Normal shared queue wait time on the Expo EAS Free Tier.
+  - **Fix:** You can safely press `Ctrl+C` in the terminal without canceling the build and monitor progress via your Expo dashboard or `eas build:list`.
+- **Market screen shows 6 sample coins instead of 50 live coins:**
+  - **Cause:** CoinGecko public API rate-limiting (HTTP `429`) or restrictive Firestore write rules on `/coins/{coinId}`.
+  - **Fix:** Pull down to refresh on the Market screen after 60 seconds, or run `node scripts/syncRealPrices.js`.
 
 ---
 
-## 11. License
+## 10. License
 
-This project is licensed under the [MIT License](file:///e:/CRTST/MOBILE-APPS/WORKON/VCrupto-main/LICENSE).
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
