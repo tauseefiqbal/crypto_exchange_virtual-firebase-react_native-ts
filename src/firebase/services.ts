@@ -270,8 +270,7 @@ export const fetchRankings = async (maxLimit: number = 100): Promise<UserProfile
 
 /**
  * 4. Execute Buy/Sell Trade
- * Calls the Cloud Function, with fallback to client-side Firestore transaction
- * for direct testing in development environments.
+ * Executes an atomic Firestore transaction (or calls Cloud Function if EXPO_PUBLIC_USE_CLOUD_FUNCTIONS=true).
  */
 export const executeCoinExchange = async (
   coinId: string,
@@ -281,51 +280,52 @@ export const executeCoinExchange = async (
   const user = auth.currentUser;
   if (!user) throw new Error('User is not authenticated.');
 
-  try {
-    // Attempt via Cloud Function first if deployed
-    const exchangeFn = httpsCallable<any, any>(functions, 'exchangeCoins');
-    const result = await exchangeFn({ coinId, isBuy, amount });
-    return result.data;
-  } catch (cloudFnErr: any) {
-    // Cloud Function is not deployed (common on free Firebase tier).
-    // Execute atomic client-side Firestore transaction with balance verification.
-    console.log('[Firebase] Executing trade via atomic Firestore transaction.');
-
-    return await runTransaction(db, async (tx) => {
-      const coinRef = doc(db, 'coins', coinId);
-      const usdRef = doc(db, 'users', user.uid, 'portfolioCoins', 'usd');
-      const holdingRef = doc(db, 'users', user.uid, 'portfolioCoins', coinId);
-
-      const [coinDoc, usdDoc, holdingDoc] = await Promise.all([
-        tx.get(coinRef),
-        tx.get(usdRef),
-        tx.get(holdingRef),
-      ]);
-
-      if (!coinDoc.exists()) throw new Error('Coin does not exist');
-      const price = Number(coinDoc.data().currentPrice) || 0;
-      const currentUsd = usdDoc.exists() ? Number(usdDoc.data().amount) || 0 : 0;
-      const currentHolding = holdingDoc.exists() ? Number(holdingDoc.data().amount) || 0 : 0;
-
-      const totalCost = amount * price;
-      const now = serverTimestamp();
-
-      if (isBuy) {
-        if (currentUsd < totalCost) {
-          throw new Error(`Not enough USD balance. Needed: $${totalCost.toFixed(2)}, Available: $${currentUsd.toFixed(2)}`);
-        }
-        tx.set(usdRef, { id: 'usd', coinId: 'usd', userId: user.uid, amount: currentUsd - totalCost, updatedAt: now }, { merge: true });
-        tx.set(holdingRef, { id: coinId, coinId, userId: user.uid, amount: currentHolding + amount, updatedAt: now }, { merge: true });
-      } else {
-        if (currentHolding < amount) {
-          throw new Error(`Not enough coins to sell. Tried to sell: ${amount}, Available: ${currentHolding}`);
-        }
-        tx.set(holdingRef, { id: coinId, coinId, userId: user.uid, amount: currentHolding - amount, updatedAt: now }, { merge: true });
-        tx.set(usdRef, { id: 'usd', coinId: 'usd', userId: user.uid, amount: currentUsd + totalCost, updatedAt: now }, { merge: true });
-      }
-
-      return { success: true };
-    });
+  if (process.env.EXPO_PUBLIC_USE_CLOUD_FUNCTIONS === 'true') {
+    try {
+      const exchangeFn = httpsCallable<any, any>(functions, 'exchangeCoins');
+      const result = await exchangeFn({ coinId, isBuy, amount });
+      return result.data;
+    } catch (cloudFnErr: any) {
+      console.warn('[Firebase] Cloud Function unavailable, falling back to Firestore transaction.');
+    }
   }
+
+  console.log('[Firebase] Executing trade via atomic Firestore transaction.');
+
+  return await runTransaction(db, async (tx) => {
+    const coinRef = doc(db, 'coins', coinId);
+    const usdRef = doc(db, 'users', user.uid, 'portfolioCoins', 'usd');
+    const holdingRef = doc(db, 'users', user.uid, 'portfolioCoins', coinId);
+
+    const [coinDoc, usdDoc, holdingDoc] = await Promise.all([
+      tx.get(coinRef),
+      tx.get(usdRef),
+      tx.get(holdingRef),
+    ]);
+
+    if (!coinDoc.exists()) throw new Error('Coin does not exist');
+    const price = Number(coinDoc.data().currentPrice) || 0;
+    const currentUsd = usdDoc.exists() ? Number(usdDoc.data().amount) || 0 : 0;
+    const currentHolding = holdingDoc.exists() ? Number(holdingDoc.data().amount) || 0 : 0;
+
+    const totalCost = amount * price;
+    const now = serverTimestamp();
+
+    if (isBuy) {
+      if (currentUsd < totalCost) {
+        throw new Error(`Not enough USD balance. Needed: $${totalCost.toFixed(2)}, Available: $${currentUsd.toFixed(2)}`);
+      }
+      tx.set(usdRef, { id: 'usd', coinId: 'usd', userId: user.uid, amount: currentUsd - totalCost, updatedAt: now }, { merge: true });
+      tx.set(holdingRef, { id: coinId, coinId, userId: user.uid, amount: currentHolding + amount, updatedAt: now }, { merge: true });
+    } else {
+      if (currentHolding < amount) {
+        throw new Error(`Not enough coins to sell. Tried to sell: ${amount}, Available: ${currentHolding}`);
+      }
+      tx.set(holdingRef, { id: coinId, coinId, userId: user.uid, amount: currentHolding - amount, updatedAt: now }, { merge: true });
+      tx.set(usdRef, { id: 'usd', coinId: 'usd', userId: user.uid, amount: currentUsd + totalCost, updatedAt: now }, { merge: true });
+    }
+
+    return { success: true };
+  });
 };
 
